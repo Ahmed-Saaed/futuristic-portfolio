@@ -1,8 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  // Isolate production build output when NEXT_BUILD_DIR is set so `next build` never corrupts a live `next dev` server
-  distDir: process.env.NEXT_BUILD_DIR || '.next-dev',
+  // Default to standard `.next` so Vercel deployments always find `/vercel/path0/.next`
+  distDir: process.env.NEXT_BUILD_DIR || '.next',
   reactStrictMode: true,
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -10,4 +10,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-
