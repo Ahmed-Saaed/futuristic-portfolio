@@ -100,3 +100,39 @@ export interface CapabilitiesContent {
   };
 }
 
+export type ProcessStageId =
+  | 'understand'
+  | 'architect'
+  | 'build'
+  | 'validate'
+  | 'deliver';
+
+export type ProcessStageAccent = 'gold' | 'cyan';
+
+export interface ProcessStage {
+  id: ProcessStageId;
+  number: string;
+  title: string;
+  description: string;
+  expandedDetails: string[];
+  accent: ProcessStageAccent;
+  statueLightingFocus: {
+    goldIntensity: number;
+    cyanIntensity: number;
+    orbitAngle: number;
+  };
+}
+
+export interface EngineeringProcessContent {
+  sectionIndex: string;
+  sectionLabel: string;
+  headline: {
+    line1: string;
+    line2: string;
+  };
+  fullHeadline: string;
+  supportingText: string;
+  supportingCaption: string;
+  stages: ProcessStage[];
+}
+

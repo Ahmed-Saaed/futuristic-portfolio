@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: "AHMED SA'ED — React Native Developer & Full-Stack Engineer",
+  title: "AHMED SAAED — React Native Developer & Full-Stack Engineer",
   description:
     'Engineering ideas into experiences. I build digital products that move ideas forward — React Native Developer, Full-Stack Engineer, and Problem Solver.',
 };
