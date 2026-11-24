@@ -25,6 +25,23 @@ export function CapabilitiesSection() {
     setExpandedArea((prev) => (prev === id ? null : id));
   };
 
+  // Close expanded capability card when clicking outside any `[data-capability-card]`
+  useEffect(() => {
+    if (!expandedArea) return;
+
+    const handlePointerDownOutside = (event: PointerEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+      if (!target.closest('[data-capability-card]')) {
+        setExpandedArea(null);
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDownOutside);
+    return () =>
+      document.removeEventListener('pointerdown', handlePointerDownOutside);
+  }, [expandedArea]);
+
   useEffect(() => {
     const section = sectionRef.current;
     if (!section || prefersReducedMotion) return;

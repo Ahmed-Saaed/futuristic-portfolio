@@ -24,6 +24,10 @@
     background-color: rgba(196, 164, 90, 0.3);
     color: #F2F0E9;
   }
+
+  svg *:focus {
+    outline: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

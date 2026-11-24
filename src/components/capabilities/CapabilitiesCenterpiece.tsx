@@ -401,7 +401,7 @@ export function CapabilitiesCenterpiece({
           <g
             ref={botSlabRef}
             onClick={() => onSelectArea('backend')}
-            className="cursor-pointer"
+            className="cursor-pointer outline-none focus:outline-none"
             role="button"
             tabIndex={0}
             aria-label="Select Layer 03: Backend and Systems"
@@ -480,7 +480,7 @@ export function CapabilitiesCenterpiece({
           <g
             ref={midSlabRef}
             onClick={() => onSelectArea('mobile')}
-            className="cursor-pointer"
+            className="cursor-pointer outline-none focus:outline-none"
             role="button"
             tabIndex={0}
             aria-label="Select Layer 02: Mobile Development"
@@ -553,7 +553,7 @@ export function CapabilitiesCenterpiece({
           <g
             ref={topSlabRef}
             onClick={() => onSelectArea('frontend')}
-            className="cursor-pointer"
+            className="cursor-pointer outline-none focus:outline-none"
             role="button"
             tabIndex={0}
             aria-label="Select Layer 01: Frontend Engineering"

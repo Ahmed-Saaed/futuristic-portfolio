@@ -7,7 +7,7 @@ import type { ProcessStage, ProcessStageId } from '@/types/common';
 
 export interface ProcessTimelineProps {
   stages: ProcessStage[];
-  activeStageId: ProcessStageId;
+  activeStageId: ProcessStageId | null;
   onSelectStage: (id: ProcessStageId) => void;
   className?: string;
 }
@@ -23,13 +23,13 @@ export function ProcessTimeline({
   onSelectStage,
   className,
 }: ProcessTimelineProps) {
-  const activeIndex = Math.max(
-    0,
-    stages.findIndex((s) => s.id === activeStageId)
-  );
+  const hasExpandedCard = activeStageId !== null;
+  const activeIndex = activeStageId
+    ? stages.findIndex((s) => s.id === activeStageId)
+    : -1;
 
   const handleAdvanceNext = () => {
-    const nextIndex = (activeIndex + 1) % stages.length;
+    const nextIndex = (Math.max(0, activeIndex) + 1) % stages.length;
     const nextStage = stages[nextIndex];
     if (nextStage) {
       onSelectStage(nextStage.id);
@@ -44,11 +44,15 @@ export function ProcessTimeline({
       <div
         role="list"
         aria-label="Five engineering process stages"
-        className="relative z-20 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-12 lg:items-start lg:gap-4 xl:gap-5"
+        className={cn(
+          'relative z-20 grid grid-cols-1 gap-6 md:grid-cols-2 lg:items-start lg:gap-4 xl:gap-5',
+          hasExpandedCard ? 'lg:grid-cols-12' : 'lg:grid-cols-5'
+        )}
       >
         {stages.map((stage, index) => {
           const isExpanded = stage.id === activeStageId;
-          const isPassedOrActive = index <= activeIndex;
+          const isPassedOrActive =
+            activeIndex >= 0 && index <= activeIndex;
 
           return (
             <div
@@ -56,10 +60,12 @@ export function ProcessTimeline({
               role="listitem"
               className={cn(
                 'relative flex items-center transition-all duration-500',
-                // Expanded card takes 4 columns on desktop (12-col grid: 4 + 2 + 2 + 2 + 2 = 12)
-                isExpanded
-                  ? 'md:col-span-2 lg:col-span-4'
-                  : 'md:col-span-1 lg:col-span-2'
+                // When a card is expanded: 4 + 2 + 2 + 2 + 2 = 12 cols. When all are closed: 5 equal cols.
+                hasExpandedCard
+                  ? isExpanded
+                    ? 'md:col-span-2 lg:col-span-4'
+                    : 'md:col-span-1 lg:col-span-2'
+                  : 'md:col-span-1 lg:col-span-1'
               )}
             >
               <div className="w-full">

@@ -84,7 +84,7 @@ export function Header() {
       className={cn(
         'fixed inset-x-0 top-0 z-40 transition-all duration-300',
         isScrolled
-          ? 'bg-obsidian/85 backdrop-blur-xl border-b border-white/[0.06] py-3.5 shadow-[0_10px_30px_rgba(0,0,0,0.65)]'
+          ? 'bg-obsidian/85 backdrop-blur-xl py-3.5 shadow-[0_10px_30px_rgba(0,0,0,0.65)]'
           : 'bg-gradient-to-b from-obsidian/90 via-obsidian/45 to-transparent py-5 md:py-7'
       )}
     >

@@ -19,8 +19,29 @@ export function EngineeringSection() {
 
   // Stage 01 ("UNDERSTAND") is expanded initially, matching the visual reference
   const [activeStageId, setActiveStageId] =
-    useState<ProcessStageId>('understand');
+    useState<ProcessStageId | null>('understand');
   const prefersReducedMotion = useReducedMotion();
+
+  const handleToggleStage = (id: ProcessStageId) => {
+    setActiveStageId((prev) => (prev === id ? null : id));
+  };
+
+  // Close the expanded process card when clicking outside any `[data-process-card]`
+  useEffect(() => {
+    if (!activeStageId) return;
+
+    const handlePointerDownOutside = (event: PointerEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+      if (!target.closest('[data-process-card]')) {
+        setActiveStageId(null);
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDownOutside);
+    return () =>
+      document.removeEventListener('pointerdown', handlePointerDownOutside);
+  }, [activeStageId]);
 
   const activeStage = useMemo(
     () =>
@@ -430,7 +451,7 @@ export function EngineeringSection() {
         <ProcessTimeline
           stages={ENGINEERING_PROCESS_CONTENT.stages}
           activeStageId={activeStageId}
-          onSelectStage={setActiveStageId}
+          onSelectStage={handleToggleStage}
         />
       </Container>
     </section>
