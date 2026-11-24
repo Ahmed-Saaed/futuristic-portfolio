@@ -1,0 +1,110 @@
+[
+  {
+    "id": "project-01",
+    "slug": "project-01",
+    "title": "Project Title",
+    "category": "web",
+    "categoryLabel": "Web Application",
+    "description": "A modern web application for collaborative productivity and team management.",
+    "thumbnail": "/images/projects/project-01.webp",
+    "mockupVariant": "web-collaborative",
+    "technologies": [
+      "React",
+      "TypeScript",
+      "Next.js",
+      "Tailwind CSS"
+    ],
+    "caseStudy": "/work/project-01",
+    "liveUrl": null,
+    "repositoryUrl": null,
+    "status": "placeholder",
+    "caseStudyDetails": {
+      "overview": "Placeholder Case Study — This entry reserves a slot for a real full-stack web application. Replace this summary in src/data/projects.json or via your connected CMS once final product assets and documentation are ready.",
+      "role": "Full-Stack Engineer & Frontend Architect (Placeholder)",
+      "problem": "Placeholder problem statement: Document the core workflow bottleneck, user friction, or architectural limitation that this web application was engineered to solve.",
+      "solution": "Placeholder engineering solution: Describe how a modular Next.js App Router architecture, typed state management, and responsive interface components addressed the product requirements.",
+      "architectureDecisions": [
+        "Server-first rendering strategy with selective client-side interactivity boundaries",
+        "Strict TypeScript domain schemas and reusable design-system primitives",
+        "Accessible keyboard navigation and predictable asynchronous state transitions"
+      ],
+      "challenges": [
+        "Placeholder challenge: Coordinating real-time collaborative state updates without unnecessary client re-renders",
+        "Placeholder challenge: Designing a responsive workspace layout that adapts cleanly across desktop and tablet viewports"
+      ],
+      "outcome": "Placeholder outcome — No fabricated metrics or unverified business statistics are shown. Replace with verified deployment details or qualitative engineering takeaways."
+    }
+  },
+  {
+    "id": "project-02",
+    "slug": "project-02",
+    "title": "Project Title",
+    "category": "react-native",
+    "categoryLabel": "Mobile Application",
+    "description": "A powerful mobile application for personal growth and habit tracking.",
+    "thumbnail": "/images/projects/project-02.webp",
+    "mockupVariant": "mobile-suite",
+    "technologies": [
+      "React Native",
+      "Expo",
+      "AsyncStorage",
+      "APIs"
+    ],
+    "caseStudy": "/work/project-02",
+    "liveUrl": null,
+    "repositoryUrl": null,
+    "status": "placeholder",
+    "caseStudyDetails": {
+      "overview": "Placeholder Case Study — This entry reserves a slot for a cross-platform React Native mobile application. Replace this summary in src/data/projects.json or via your connected CMS when screenshots and store links are available.",
+      "role": "React Native Developer (Placeholder)",
+      "problem": "Placeholder problem statement: Document the mobile user experience goal, offline persistence requirement, or native performance constraint addressed by this application.",
+      "solution": "Placeholder engineering solution: Detail the Expo and React Native navigation architecture, local storage synchronization, and fluid gesture interactions.",
+      "architectureDecisions": [
+        "Structured navigation hierarchy with smooth native stack and tab transitions",
+        "Offline-first local persistence layer using AsyncStorage with deterministic state hydration",
+        "Modular screen and UI component architecture optimized for 60fps mobile rendering"
+      ],
+      "challenges": [
+        "Placeholder challenge: Ensuring consistent layout geometry and touch responsiveness across iOS and Android screen ratios",
+        "Placeholder challenge: Synchronizing local device state with remote API endpoints reliably on unstable mobile networks"
+      ],
+      "outcome": "Placeholder outcome — No fabricated download counts or unverified metrics are displayed. Replace with real product release notes when ready."
+    }
+  },
+  {
+    "id": "project-03",
+    "slug": "project-03",
+    "title": "Project Title",
+    "category": "web",
+    "categoryLabel": "Web Application",
+    "description": "An analytics dashboard for real-time insights and data visualization.",
+    "thumbnail": "/images/projects/project-03.webp",
+    "mockupVariant": "web-analytics",
+    "technologies": [
+      "React",
+      "Next.js",
+      "Chart.js",
+      "Tailwind CSS"
+    ],
+    "caseStudy": "/work/project-03",
+    "liveUrl": null,
+    "repositoryUrl": null,
+    "status": "placeholder",
+    "caseStudyDetails": {
+      "overview": "Placeholder Case Study — This entry reserves a slot for a data visualization and analytics web platform. Update src/data/projects.json or connect a headless CMS to populate real project details.",
+      "role": "Frontend & Data Visualization Engineer (Placeholder)",
+      "problem": "Placeholder problem statement: Outline the complex dataset, multi-dimensional filtering, or executive reporting need that this dashboard was built to clarify.",
+      "solution": "Placeholder engineering solution: Explain how interactive charting pipelines, memoized data transformations, and dark-mode visual hierarchy delivered actionable insights.",
+      "architectureDecisions": [
+        "Decoupled data-fetching and normalization adapters from chart presentation components",
+        "Responsive canvas and SVG visualization containers with accessible fallback summaries",
+        "High-contrast obsidian and gold/cyan visual tokens designed for prolonged analytical sessions"
+      ],
+      "challenges": [
+        "Placeholder challenge: Rendering multi-series time-range visualizations smoothly without blocking the main UI thread",
+        "Placeholder challenge: Maintaining clear visual hierarchy across dense telemetry widgets on smaller viewports"
+      ],
+      "outcome": "Placeholder outcome — No invented performance percentages or fictional client names are included. Populate with verified engineering outcomes later."
+    }
+  }
+]

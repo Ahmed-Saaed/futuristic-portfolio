@@ -1,6 +1,7 @@
 /.next
 /.next-dev
 /node_modules
+/.next-prod
 
 # Ignore all images in the root folder only
 /*.png

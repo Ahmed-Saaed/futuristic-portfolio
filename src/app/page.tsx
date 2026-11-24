@@ -3,6 +3,7 @@ import { LoaderSection } from '@/components/sections/LoaderSection';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { CapabilitiesSection } from '@/components/sections/CapabilitiesSection';
+import { WorkSection } from '@/components/sections/WorkSection';
 
 export default function HomePage() {
   return (
@@ -13,6 +14,7 @@ export default function HomePage() {
         <HeroSection />
         <AboutSection />
         <CapabilitiesSection />
+        <WorkSection />
       </main>
     </>
   );
