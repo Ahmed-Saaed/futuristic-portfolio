@@ -68,3 +68,35 @@ export interface AboutContent {
   };
 }
 
+export type CapabilityAreaId = 'frontend' | 'mobile' | 'backend';
+export type CapabilityAccent = 'gold' | 'cyan';
+
+export interface CapabilityArea {
+  id: CapabilityAreaId;
+  number: string;
+  title: string;
+  shortDescription: string;
+  expandedSummary: string;
+  accent: CapabilityAccent;
+  primaryTags: string[];
+  allTechnologies: string[];
+  focusAreas: string[];
+  centerpieceLayerLabel: string;
+}
+
+export interface CapabilitiesContent {
+  sectionIndex: string;
+  sectionLabel: string;
+  headline: {
+    line1: string;
+    line2: string;
+  };
+  fullHeadline: string;
+  introduction: string;
+  areas: CapabilityArea[];
+  scrollCue: {
+    label: string;
+    href: string;
+  };
+}
+
