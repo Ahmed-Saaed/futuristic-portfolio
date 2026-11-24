@@ -1,6 +1,15 @@
 /.next
-/Ahmed Sa’ed_ Neon-Cyber Portfolio Showcase.png
-/Beyond the Code_ Purposeful Craft.png
-/Cinematic Futuristic Developer Portfolio.png
-/Cinematic Gold and Teal Developer Portfolio.png
+/.next-dev
 /node_modules
+
+# Ignore all images in the root folder only
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
+/*.gif
+/*.svg
+/*.avif
+/*.ico
+/*.bmp
+/*.tiff

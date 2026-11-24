@@ -25,6 +25,29 @@ export function Header() {
   }, []);
 
   useEffect(() => {
+    const observedIds = NAVIGATION_ITEMS.map((item) => item.id);
+    const elements = observedIds
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (elements.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.target.id) {
+            setActiveId(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-38% 0px -48% 0px', threshold: 0.05 }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     if (!isMobileMenuOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {

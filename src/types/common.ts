@@ -42,3 +42,29 @@ export interface HeroContent {
   };
 }
 
+export type PrincipleIconId = 'curiosity' | 'craft' | 'ownership';
+
+export interface PrincipleItem {
+  id: PrincipleIconId;
+  title: string;
+  description: string;
+}
+
+export interface AboutContent {
+  sectionIndex: string;
+  sectionLabel: string;
+  topRightLabel: string;
+  headline: {
+    line1: string;
+    line2: string;
+  };
+  fullHeadline: string;
+  introduction: string;
+  supportingStatement: string;
+  principles: PrincipleItem[];
+  scrollCue: {
+    label: string;
+    href: string;
+  };
+}
+
