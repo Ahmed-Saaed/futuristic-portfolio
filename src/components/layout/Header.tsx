@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { BRAND_CONFIG, HEADER_CTA, NAVIGATION_ITEMS } from '@/data/navigation';
 import { Container } from '@/components/ui/Container';
@@ -10,9 +11,20 @@ import { Navigation } from '@/components/layout/Navigation';
 import { cn } from '@/lib/utils';
 
 export function Header() {
-  const [activeId, setActiveId] = useState<string>('home');
+  const pathname = usePathname();
+  const isWorkRoute = pathname?.startsWith('/work') ?? false;
+  const [activeId, setActiveId] = useState<string>(
+    isWorkRoute ? 'work' : 'home'
+  );
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+
+  // Sync active tab with route changes (e.g. /work or /work/[slug])
+  useEffect(() => {
+    if (isWorkRoute) {
+      setActiveId('work');
+    }
+  }, [isWorkRoute]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +37,8 @@ export function Header() {
   }, []);
 
   useEffect(() => {
+    if (isWorkRoute) return;
+
     const observedIds = NAVIGATION_ITEMS.map((item) => item.id);
     const elements = observedIds
       .map((id) => document.getElementById(id))
@@ -45,7 +59,7 @@ export function Header() {
 
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [isWorkRoute]);
 
   useEffect(() => {
     if (!isMobileMenuOpen) return;
@@ -77,7 +91,7 @@ export function Header() {
       <Container className="flex items-center justify-between gap-4">
         {/* Left: AS Monogram + AHMED SA'ED Wordmark */}
         <a
-          href="#home"
+          href={isWorkRoute ? '/#home' : '#home'}
           onClick={() => handleNavSelect('home')}
           className="group inline-flex items-center gap-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-highlight focus-visible:ring-offset-4 focus-visible:ring-offset-obsidian rounded-md"
           aria-label="Ahmed Sa'ed — Home"
@@ -104,7 +118,7 @@ export function Header() {
         <div className="flex items-center gap-3">
           <div className="hidden md:block">
             <Button
-              href={HEADER_CTA.href}
+              href={isWorkRoute ? `/${HEADER_CTA.href}` : HEADER_CTA.href}
               variant="nav-pill"
               size="sm"
               className="px-5 py-2.5 text-[0.8125rem]"

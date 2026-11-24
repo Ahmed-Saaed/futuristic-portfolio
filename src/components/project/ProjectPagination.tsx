@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -11,7 +12,7 @@ export interface ProjectPaginationProps {
   onStepPrevious: () => void;
   onStepNext: () => void;
   onSelectSlot: (index: number) => void;
-  onExploreMore: () => void;
+  exploreHref?: string;
   exploreLabel?: string;
   className?: string;
 }
@@ -20,7 +21,7 @@ export interface ProjectPaginationProps {
  * Gallery navigation bar matching the Section 04 reference:
  * Left: `(<-)  01 —— 02 —— 03`
  * Right: `[ Explore More Projects -> ]  (->)`
- * Adapts cleanly whether the collection has 1, 2, 3, or many projects.
+ * The Explore More Projects button navigates directly to the dedicated `/work` archive page.
  */
 export function ProjectPagination({
   totalItems,
@@ -28,7 +29,7 @@ export function ProjectPagination({
   onStepPrevious,
   onStepNext,
   onSelectSlot,
-  onExploreMore,
+  exploreHref = '/work',
   exploreLabel = 'Explore More Projects',
   className,
 }: ProjectPaginationProps) {
@@ -101,11 +102,10 @@ export function ProjectPagination({
         </div>
       </div>
 
-      {/* Right: "Explore More Projects ->" Pill Button + Next Circular Button */}
+      {/* Right: "Explore More Projects ->" Pill Link to Dedicated /work Page + Next Circular Button */}
       <div className="flex items-center justify-between sm:justify-end gap-3.5">
-        <button
-          type="button"
-          onClick={onExploreMore}
+        <Link
+          href={exploreHref}
           className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full border border-gold/65 bg-[#12110E]/90 px-5 sm:px-6 py-2.5 font-sans text-xs sm:text-[0.8125rem] font-medium text-gold-highlight shadow-[0_0_22px_-6px_rgba(229,190,120,0.45)] transition-all duration-300 hover:border-gold-highlight hover:bg-gold/15 hover:text-warmWhite hover:shadow-gold-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-highlight"
         >
           <span
@@ -117,7 +117,7 @@ export function ProjectPagination({
             aria-hidden="true"
             className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
           />
-        </button>
+        </Link>
 
         <button
           type="button"

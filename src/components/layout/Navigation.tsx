@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import type { NavItem } from '@/types/common';
 
@@ -18,6 +19,8 @@ export function Navigation({
   orientation = 'horizontal',
   className,
 }: NavigationProps) {
+  const pathname = usePathname();
+  const isHomeRoute = pathname === '/';
   const isVertical = orientation === 'vertical';
 
   return (
@@ -35,11 +38,15 @@ export function Navigation({
       >
         {items.map((item) => {
           const isActive = item.id === activeId;
+          const resolvedHref =
+            !isHomeRoute && item.href.startsWith('#')
+              ? `/${item.href}`
+              : item.href;
 
           return (
             <li key={item.id} className="relative">
               <a
-                href={item.href}
+                href={resolvedHref}
                 onClick={() => onSelect?.(item.id)}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(

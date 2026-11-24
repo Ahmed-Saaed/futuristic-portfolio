@@ -113,18 +113,6 @@ export function ProjectGallery() {
     }
   };
 
-  const handleExploreMore = () => {
-    // If filtered to a subset, show all projects; otherwise open preview of the active project
-    if (activeFilter !== 'all') {
-      handleSelectFilter('all');
-      return;
-    }
-    const target = visibleProjects[activeSlotIndex] ?? visibleProjects[0];
-    if (target) {
-      setPreviewProject(target);
-    }
-  };
-
   return (
     <div className="space-y-8 md:space-y-10">
       {/* 1. Horizontal Category Filter Pills */}
@@ -192,12 +180,8 @@ export function ProjectGallery() {
           onStepPrevious={handleStepPrevious}
           onStepNext={handleStepNext}
           onSelectSlot={handleSelectSlot}
-          onExploreMore={handleExploreMore}
-          exploreLabel={
-            activeFilter !== 'all'
-              ? 'View All Projects'
-              : 'Explore More Projects'
-          }
+          exploreHref="/work"
+          exploreLabel="Explore More Projects"
         />
       </div>
 
