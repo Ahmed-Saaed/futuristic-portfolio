@@ -10,30 +10,29 @@ export interface SkillsBackgroundVideoProps {
 }
 
 /**
- * Lazy-Loaded Atmospheric Background Video for Section 03 (Capabilities / Skills).
- * - Configured for Pixabay "Pyramid Loop Animation" (https://pixabay.com/videos/pyramid-loop-animation-360946/)
- *   at `/videos/pyramid-loop-animation-360946.mp4` with automatic fallback to `/videos/skills-golden-atmosphere.mp4`.
- * - Lazy-loaded via `IntersectionObserver` (`rootMargin: '250px'`) so it never downloads during initial Hero load.
+ * Atmospheric Background Video for Section 03 (Capabilities / Skills).
+ * - Uses `/videos/skills-golden-atmosphere.mp4` directly with `preload="auto"` and a generous
+ *   `1200px` pre-scroll observer margin so the video is already buffered and playing the moment
+ *   Section 03 enters the viewport (zero 404 retry delay).
  * - Pauses automatically when scrolled out of view to save GPU/battery.
  * - Respects `prefers-reduced-motion` and Save-Data mode.
  */
 export function SkillsBackgroundVideo({
-  videoSrc = '/videos/pyramid-loop-animation-360946.mp4',
+  videoSrc = '/videos/skills-golden-atmosphere.mp4',
   className,
 }: SkillsBackgroundVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const prefersReducedMotion = useReducedMotion();
-  const [currentSrc, setCurrentSrc] = useState<string>(videoSrc);
   const [shouldLoadVideo, setShouldLoadVideo] = useState<boolean>(false);
   const [isInViewport, setIsInViewport] = useState<boolean>(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(false);
+  const [isVideoReady, setIsVideoReady] = useState<boolean>(false);
 
-  // 1. Lazy-load the video only when the user scrolls near Section 03
+  // 1. Start buffering early (1200px before Section 03 enters the screen, or during idle time)
   useEffect(() => {
     if (prefersReducedMotion) {
       setShouldLoadVideo(false);
-      setIsVideoPlaying(false);
+      setIsVideoReady(false);
       return;
     }
 
@@ -48,8 +47,15 @@ export function SkillsBackgroundVideo({
       return;
     }
 
+    // Begin preloading right after initial Hero hydration so it's ready before the user reaches Section 03
+    const preloadTimer = window.setTimeout(() => {
+      setShouldLoadVideo(true);
+    }, 350);
+
     const el = containerRef.current;
-    if (!el) return;
+    if (!el) {
+      return () => window.clearTimeout(preloadTimer);
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -62,23 +68,28 @@ export function SkillsBackgroundVideo({
           }
         });
       },
-      { rootMargin: '250px 0px', threshold: 0.01 }
+      { rootMargin: '1200px 0px', threshold: 0.01 }
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      window.clearTimeout(preloadTimer);
+      observer.disconnect();
+    };
   }, [prefersReducedMotion]);
 
-  // 2. Play when in viewport, pause when scrolled away
+  // 2. Play immediately when near/in viewport, pause when far offscreen
   useEffect(() => {
     const videoEl = videoRef.current;
     if (!shouldLoadVideo || !videoEl) return;
 
     if (isInViewport) {
-      videoEl
-        .play()
-        .then(() => setIsVideoPlaying(true))
-        .catch(() => setIsVideoPlaying(false));
+      const playPromise = videoEl.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsVideoReady(true))
+          .catch(() => setIsVideoReady(false));
+      }
     } else {
       videoEl.pause();
     }
@@ -96,23 +107,18 @@ export function SkillsBackgroundVideo({
       {shouldLoadVideo && (
         <video
           ref={videoRef}
-          src={currentSrc}
+          src={videoSrc}
           muted
           loop
           playsInline
-          preload="none"
-          onPlaying={() => setIsVideoPlaying(true)}
-          onError={() => {
-            if (currentSrc !== '/videos/skills-golden-atmosphere.mp4') {
-              setCurrentSrc('/videos/skills-golden-atmosphere.mp4');
-            } else {
-              setIsVideoPlaying(false);
-            }
-          }}
+          preload="auto"
+          onLoadedData={() => setIsVideoReady(true)}
+          onPlaying={() => setIsVideoReady(true)}
+          onError={() => setIsVideoReady(false)}
           className={cn(
-            'h-full w-full object-cover object-center transition-opacity duration-1000 ease-out',
-            isVideoPlaying
-              ? 'opacity-[0.38] mix-blend-screen contrast-125 brightness-95'
+            'h-full w-full object-cover object-center transition-opacity duration-500 ease-out',
+            isVideoReady
+              ? 'opacity-[0.42] mix-blend-screen contrast-125 brightness-95'
               : 'opacity-0'
           )}
         />
@@ -123,7 +129,7 @@ export function SkillsBackgroundVideo({
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(circle at 66% 38%, rgba(0, 213, 232, 0.09) 0%, rgba(196, 164, 90, 0.08) 36%, rgba(8, 9, 11, 0.9) 76%)',
+            'radial-gradient(circle at 66% 38%, rgba(0, 213, 232, 0.09) 0%, rgba(196, 164, 90, 0.08) 36%, rgba(8, 9, 11, 0.88) 76%)',
         }}
       />
 
