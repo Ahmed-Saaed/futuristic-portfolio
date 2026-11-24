@@ -28,13 +28,13 @@ export function ScrollCue({
       >
         <span
           className={cn(
-            'relative flex h-9 w-6 items-start justify-center rounded-full border-[1.5px] p-1.5 transition-colors duration-300 group-hover:border-gold-highlight',
+            'relative flex h-9 w-6 items-start justify-center rounded-full border-[1.5px] p-1.5 transition-colors duration-200 group-hover:border-gold-highlight',
             isGold
               ? 'border-gold/80 shadow-[0_0_12px_rgba(196,164,90,0.25)]'
               : 'border-warmWhite/75'
           )}
         >
-          <span className="h-2 w-[2px] rounded-full bg-gold-highlight animate-bounce" />
+          <span className="h-2 w-[2px] rounded-full bg-gold-highlight transition-transform duration-300 ease-out group-hover:translate-y-1.5" />
         </span>
         <span className="font-sans text-xs sm:text-[0.8125rem] tracking-[0.04em] text-warmWhite/85 group-hover:text-gold-highlight">
           {label}

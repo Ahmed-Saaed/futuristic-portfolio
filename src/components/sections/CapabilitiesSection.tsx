@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CAPABILITIES_CONTENT } from '@/data/capabilities';
 import { Container } from '@/components/ui/Container';
 import { ScrollCue } from '@/components/ui/ScrollCue';
 import { CapabilitiesCenterpiece } from '@/components/capabilities/CapabilitiesCenterpiece';
 import { CapabilityCard } from '@/components/capabilities/CapabilityCard';
+import { SkillsBackgroundVideo } from '@/components/capabilities/SkillsBackgroundVideo';
+import { createSectionEntranceTimeline } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { CapabilityAreaId } from '@/types/common';
 
@@ -46,56 +47,24 @@ export function CapabilitiesSection() {
     const section = sectionRef.current;
     if (!section || prefersReducedMotion) return;
 
-    gsap.registerPlugin(ScrollTrigger);
-
     const ctx = gsap.context(() => {
-      // Progressive reveal for headline, intro, 3 capability cards, and staggered technology tags
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 74%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none reverse',
+      createSectionEntranceTimeline(section, [
+        { selector: '[data-cap-eyebrow]', at: 0, y: 10 },
+        {
+          selector: '[data-cap-headline-line]',
+          at: 0.06,
+          y: 16,
+          stagger: 0.08,
         },
-        defaults: { ease: 'power3.out' },
-      });
-
-      tl.fromTo(
-        '[data-cap-eyebrow]',
-        { autoAlpha: 0, x: -16 },
-        { autoAlpha: 1, x: 0, duration: 0.7 },
-        0
-      )
-        .fromTo(
-          '[data-cap-headline-line]',
-          { autoAlpha: 0, y: 30 },
-          { autoAlpha: 1, y: 0, duration: 0.88, stagger: 0.14 },
-          0.1
-        )
-        .fromTo(
-          '[data-cap-intro]',
-          { autoAlpha: 0, y: 18 },
-          { autoAlpha: 1, y: 0, duration: 0.75 },
-          0.32
-        )
-        .fromTo(
-          '[data-capability-card]',
-          { autoAlpha: 0, y: 28 },
-          { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.14 },
-          0.45
-        )
-        .fromTo(
-          '[data-capability-tag]',
-          { autoAlpha: 0, y: 10 },
-          { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.04 },
-          0.65
-        )
-        .fromTo(
-          '[data-cap-chrome]',
-          { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 0.8 },
-          0.8
-        );
+        { selector: '[data-cap-intro]', at: 0.18, y: 12 },
+        {
+          selector: '[data-capability-card]',
+          at: 0.24,
+          y: 18,
+          stagger: 0.09,
+        },
+        { selector: '[data-cap-chrome]', at: 0.42, y: 0 },
+      ]);
     }, sectionRef);
 
     return () => ctx.revert();
@@ -109,8 +78,10 @@ export function CapabilitiesSection() {
       className="relative min-h-screen w-full overflow-hidden bg-obsidian py-24 md:py-28 lg:py-20 flex flex-col justify-between"
     >
       {/* =====================================================================
-          1. CONTINUOUS ABOUT-TO-CAPABILITIES ORBITAL BRIDGE & ATMOSPHERE
+          1. LAZY-LOADED ATMOSPHERIC GOLDEN PARTICLE VIDEO & ORBITAL BRIDGE
          ===================================================================== */}
+      <SkillsBackgroundVideo />
+
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -118,15 +89,6 @@ export function CapabilitiesSection() {
         {/* Top orbital light bridge connecting Section 02's orbital elements directly into Section 03's 3D stack */}
         <div className="absolute right-[26%] top-0 h-36 w-[1.5px] bg-gradient-to-b from-gold/60 via-cyan/35 to-transparent hidden lg:block" />
         <div className="absolute right-[16%] -top-20 h-64 w-96 rounded-full bg-cyan/10 blur-[120px]" />
-
-        {/* Subtle dark architectural pillar & diagonal lighting in upper-right background */}
-        <div
-          className="absolute inset-0 opacity-40"
-          style={{
-            backgroundImage:
-              'radial-gradient(circle at 68% 38%, rgba(0, 213, 232, 0.11) 0%, rgba(196, 164, 90, 0.09) 34%, rgba(8, 9, 11, 0.98) 72%)',
-          }}
-        />
       </div>
 
       {/* =====================================================================

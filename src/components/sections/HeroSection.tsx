@@ -9,6 +9,8 @@ import { HERO_CONTENT, SOCIAL_LINKS } from '@/data/navigation';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { ScrollCue } from '@/components/ui/ScrollCue';
+import { HeroBackgroundVideo } from '@/components/sections/HeroBackgroundVideo';
+import { MOTION_TOKENS } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { SocialLinkItem } from '@/types/common';
 
@@ -16,7 +18,7 @@ function SocialIcon({ id }: { id: SocialLinkItem['id'] }) {
   switch (id) {
     case 'github':
       return (
-        <span className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-warmWhite text-obsidian shadow-[0_0_14px_rgba(242,240,233,0.2)] transition-all duration-300 group-hover:scale-110 group-hover:bg-gold-highlight group-hover:shadow-gold-glow">
+        <span className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-warmWhite text-obsidian shadow-[0_0_14px_rgba(242,240,233,0.2)] transition-all duration-200 group-hover:bg-gold-highlight group-hover:shadow-gold-glow">
           <svg
             viewBox="0 0 24 24"
             className="h-4 w-4 sm:h-[1.15rem] sm:w-[1.15rem] fill-current"
@@ -28,7 +30,7 @@ function SocialIcon({ id }: { id: SocialLinkItem['id'] }) {
       );
     case 'linkedin':
       return (
-        <span className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-[7px] bg-warmWhite text-obsidian shadow-[0_0_14px_rgba(242,240,233,0.2)] transition-all duration-300 group-hover:scale-110 group-hover:bg-gold-highlight group-hover:shadow-gold-glow">
+        <span className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-[7px] bg-warmWhite text-obsidian shadow-[0_0_14px_rgba(242,240,233,0.2)] transition-all duration-200 group-hover:bg-gold-highlight group-hover:shadow-gold-glow">
           <svg
             viewBox="0 0 24 24"
             className="h-4 w-4 sm:h-[1.15rem] sm:w-[1.15rem] fill-current"
@@ -40,7 +42,7 @@ function SocialIcon({ id }: { id: SocialLinkItem['id'] }) {
       );
     case 'email':
       return (
-        <span className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-[7px] border-[1.75px] border-warmWhite/90 bg-obsidian/50 text-warmWhite transition-all duration-300 group-hover:scale-110 group-hover:border-gold-highlight group-hover:text-gold-highlight group-hover:shadow-gold-glow">
+        <span className="inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-[7px] border-[1.75px] border-warmWhite/90 bg-obsidian/50 text-warmWhite transition-all duration-200 group-hover:border-gold-highlight group-hover:text-gold-highlight group-hover:shadow-gold-glow">
           <Mail
             className="h-4 w-4 sm:h-[1.15rem] sm:w-[1.15rem]"
             aria-hidden="true"
@@ -60,61 +62,71 @@ export function HeroSection() {
     if (!section || prefersReducedMotion) return;
 
     const ctx = gsap.context(() => {
-      // Staggered editorial entrance
-      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      // Restrained editorial entrance (400–700ms, power2.out, small vertical movement)
+      const tl = gsap.timeline({
+        defaults: {
+          ease: MOTION_TOKENS.ease.primary,
+          duration: MOTION_TOKENS.duration.entrance,
+        },
+      });
 
       tl.fromTo(
         '[data-hero-portrait]',
-        { autoAlpha: 0, scale: 1.04 },
-        { autoAlpha: 1, scale: 1, duration: 1.25, ease: 'power2.out' },
-        0.05
+        { autoAlpha: 0 },
+        { autoAlpha: 1, duration: 0.75 },
+        0
       )
         .fromTo(
           '[data-hero-eyebrow]',
-          { autoAlpha: 0, y: 18 },
-          { autoAlpha: 1, y: 0, duration: 0.75 },
-          0.2
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, clearProps: 'transform,opacity,visibility' },
+          0.1
         )
         .fromTo(
           '[data-hero-headline-line]',
-          { autoAlpha: 0, y: 28 },
-          { autoAlpha: 1, y: 0, duration: 0.85, stagger: 0.11 },
-          0.3
+          { autoAlpha: 0, y: 16 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            stagger: 0.08,
+            clearProps: 'transform,opacity,visibility',
+          },
+          0.16
         )
         .fromTo(
           '[data-hero-roles]',
-          { autoAlpha: 0, y: 16 },
-          { autoAlpha: 1, y: 0, duration: 0.7 },
-          0.6
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, clearProps: 'transform,opacity,visibility' },
+          0.35
         )
         .fromTo(
           '[data-hero-ctas]',
-          { autoAlpha: 0, y: 18 },
-          { autoAlpha: 1, y: 0, duration: 0.75 },
-          0.7
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, clearProps: 'transform,opacity,visibility' },
+          0.42
         )
         .fromTo(
           '[data-hero-chrome]',
           { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 0.9, stagger: 0.1 },
-          0.8
+          { autoAlpha: 1, duration: 0.6, clearProps: 'opacity,visibility' },
+          0.48
         );
 
-      // Subtle scroll parallax transitioning into Section 02
+      // Restrained Hero -> About continuity transition (subtle 24px shift and gentle fade, no excessive zoom)
       gsap.registerPlugin(ScrollTrigger);
       if (bgSceneRef.current) {
         gsap.fromTo(
           bgSceneRef.current,
-          { y: 0, scale: 1 },
+          { y: 0, opacity: 1 },
           {
-            y: 90,
-            scale: 1.04,
+            y: 24,
+            opacity: 0.72,
             ease: 'none',
             scrollTrigger: {
               trigger: section,
               start: 'top top',
               end: 'bottom top',
-              scrub: 0.8,
+              scrub: 0.5,
             },
           }
         );
@@ -134,27 +146,37 @@ export function HeroSection() {
       className="relative min-h-screen w-full overflow-hidden bg-obsidian pt-24 pb-10 md:pt-28 lg:pt-24 lg:pb-10 flex flex-col justify-between"
     >
       {/* =====================================================================
-          1. FULL-BLEED CINEMATIC HERO PORTRAIT & ORBITAL ENVIRONMENT SCENE
+          1. LAYERED HERO BACKGROUND:
+             (a) Portrait & Orbital Environment Base
+             (b) Atmospheric Classical Architecture Background Video + Dark Gold Vignette
+             (c) Bottom Seam Dissolve into Section 02
          ===================================================================== */}
       <div
         ref={bgSceneRef}
         data-hero-portrait
-        className="pointer-events-none absolute inset-0 z-0 hidden lg:block"
+        className="pointer-events-none absolute inset-0 z-0"
       >
-        <Image
-          src={HERO_CONTENT.portrait.src}
-          alt={HERO_CONTENT.portrait.alt}
-          fill
-          priority
-          quality={95}
-          sizes="100vw"
-          className="object-cover object-right-bottom xl:object-center select-none"
-        />
+        {/* Base Layer: Ahmed's Widescreen Portrait & Orbital Scene (Desktop) */}
+        <div className="absolute inset-0 hidden lg:block">
+          <Image
+            src={HERO_CONTENT.portrait.src}
+            alt={HERO_CONTENT.portrait.alt}
+            fill
+            priority
+            quality={95}
+            sizes="100vw"
+            className="object-cover object-right-bottom xl:object-center select-none"
+          />
+        </div>
 
-        {/* Subtle bottom-edge blend so the obsidian mountain base transitions cleanly into Section 02 */}
+        {/* Atmospheric Classical Architecture Video Layer (Sunlit Ancient Ruins & Columns)
+            Blended softly into the dark obsidian negative space with a strong dark vignette */}
+        <HeroBackgroundVideo posterSrc={HERO_CONTENT.portrait.src} />
+
+        {/* Smooth bottom-edge transition gradient into Section 02 (About) */}
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-obsidian via-obsidian/45 to-transparent"
+          className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-obsidian via-obsidian/65 to-transparent"
         />
       </div>
 
@@ -166,12 +188,10 @@ export function HeroSection() {
         aria-label="Section progress indicator"
         className="pointer-events-none absolute left-5 xl:left-7 top-1/2 z-30 hidden -translate-y-1/2 flex-col items-center gap-4 lg:flex"
       >
-        {/* Top vertical gold line with glowing node */}
         <div className="relative h-36 w-[1.5px] bg-gradient-to-b from-transparent via-gold/55 to-gold-highlight">
           <span className="absolute -bottom-1 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-gold-highlight shadow-[0_0_10px_2px_rgba(229,190,120,0.9)]" />
         </div>
 
-        {/* Vertical 01 / 07 text */}
         <span
           className="py-2 font-display text-[0.75rem] font-medium tracking-[0.26em] text-gold-highlight/90 select-none"
           style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
@@ -179,7 +199,6 @@ export function HeroSection() {
           {HERO_CONTENT.sectionIndex} / {HERO_CONTENT.totalSections}
         </span>
 
-        {/* Bottom vertical gold line with glowing node */}
         <div className="relative h-36 w-[1.5px] bg-gradient-to-t from-transparent via-gold/45 to-gold-highlight">
           <span className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-gold-highlight shadow-[0_0_10px_2px_rgba(229,190,120,0.9)]" />
         </div>
@@ -202,12 +221,11 @@ export function HeroSection() {
                 </p>
               </div>
 
-              {/* Primary Dominant Headline — Intersects with the golden ring & left shoulder just like the reference */}
+              {/* Primary Dominant Headline */}
               <h1
                 aria-label={HERO_CONTENT.fullHeadline}
-                className="font-display text-[length:var(--text-hero-headline)] leading-[1.05] tracking-[-0.02em] uppercase text-warmWhite mb-6 md:mb-7 drop-shadow-[0_4px_24px_rgba(8,9,11,0.75)]"
+                className="font-display text-[length:var(--text-hero-headline)] leading-[1.05] tracking-[-0.02em] uppercase text-warmWhite mb-6 md:mb-7 drop-shadow-[0_4px_24px_rgba(8,9,11,0.85)]"
               >
-                {/* Line 1: I BUILD DIGITAL */}
                 <span data-hero-headline-line className="block">
                   <span className="font-bold text-warmWhite">
                     {headlineLines.line1Prefix}
@@ -220,7 +238,6 @@ export function HeroSection() {
                   </span>
                 </span>
 
-                {/* Line 2: PRODUCTS THAT */}
                 <span data-hero-headline-line className="block">
                   <span className="font-bold text-warmWhite">
                     {headlineLines.line2Products}
@@ -230,7 +247,6 @@ export function HeroSection() {
                   </span>
                 </span>
 
-                {/* Line 3: MOVE IDEAS FORWARD. */}
                 <span
                   data-hero-headline-line
                   className="block lg:whitespace-nowrap"
@@ -244,7 +260,7 @@ export function HeroSection() {
                 </span>
               </h1>
 
-              {/* Professional Title Row with Gold Dot Separators */}
+              {/* Professional Title Row */}
               <p
                 data-hero-roles
                 className="mb-8 md:mb-10 flex flex-wrap items-center gap-x-3 gap-y-1.5 font-sans text-[length:var(--text-subtitle)] font-normal text-warmWhite/95 drop-shadow-[0_2px_12px_rgba(8,9,11,0.9)]"
@@ -287,7 +303,7 @@ export function HeroSection() {
               </div>
             </div>
 
-            {/* MOBILE/TABLET (< 1024px) PORTRAIT: Framed cleanly beneath the CTAs */}
+            {/* MOBILE/TABLET (< 1024px) PORTRAIT */}
             <div className="relative mx-auto w-full max-w-[540px] aspect-[16/11] lg:hidden overflow-hidden rounded-2xl">
               <Image
                 src={HERO_CONTENT.portrait.src}
@@ -311,7 +327,6 @@ export function HeroSection() {
          ===================================================================== */}
       <Container className="relative z-30 mt-4">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          {/* Bottom-Left: Scroll to explore mouse cue */}
           <div data-hero-chrome>
             <ScrollCue
               label={HERO_CONTENT.scrollCueLabel}
@@ -320,7 +335,6 @@ export function HeroSection() {
             />
           </div>
 
-          {/* Bottom-Right: Larger Vertical Social Links (GitHub, LinkedIn, Email) */}
           <ul
             data-hero-chrome
             aria-label="Social and contact links"
@@ -331,7 +345,7 @@ export function HeroSection() {
                 <a
                   href={item.href}
                   aria-label={item.ariaLabel}
-                  className="group inline-flex items-center gap-3.5 font-sans text-sm sm:text-[0.9375rem] font-medium tracking-wide text-warmWhite/95 transition-colors duration-300 hover:text-gold-highlight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-highlight rounded-sm drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]"
+                  className="group inline-flex items-center gap-3.5 font-sans text-sm sm:text-[0.9375rem] font-medium tracking-wide text-warmWhite/95 transition-colors duration-200 hover:text-gold-highlight focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-highlight rounded-sm drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)]"
                 >
                   <SocialIcon id={item.id} />
                   <span>{item.label}</span>

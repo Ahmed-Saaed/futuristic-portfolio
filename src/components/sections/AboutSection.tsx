@@ -2,12 +2,12 @@
 
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ABOUT_CONTENT } from '@/data/about';
 import { Container } from '@/components/ui/Container';
 import { ScrollCue } from '@/components/ui/ScrollCue';
 import { PrincipleCard } from '@/components/about/PrincipleCard';
 import { OrbitalSculpture } from '@/components/about/OrbitalSculpture';
+import { createSectionEntranceTimeline } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export function AboutSection() {
@@ -18,56 +18,25 @@ export function AboutSection() {
     const section = sectionRef.current;
     if (!section || prefersReducedMotion) return;
 
-    gsap.registerPlugin(ScrollTrigger);
-
     const ctx = gsap.context(() => {
-      // Progressive editorial reveal triggered when scrolling into Section 02
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 74%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none reverse',
+      createSectionEntranceTimeline(section, [
+        { selector: '[data-about-eyebrow]', at: 0, y: 10 },
+        {
+          selector: '[data-about-headline-line]',
+          at: 0.06,
+          y: 18,
+          stagger: 0.08,
         },
-        defaults: { ease: 'power3.out' },
-      });
-
-      tl.fromTo(
-        '[data-about-eyebrow]',
-        { autoAlpha: 0, x: -16 },
-        { autoAlpha: 1, x: 0, duration: 0.7 },
-        0
-      )
-        .fromTo(
-          '[data-about-headline-line]',
-          { autoAlpha: 0, y: 32 },
-          { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.14 },
-          0.1
-        )
-        .fromTo(
-          '[data-about-intro]',
-          { autoAlpha: 0, y: 20 },
-          { autoAlpha: 1, y: 0, duration: 0.8 },
-          0.32
-        )
-        .fromTo(
-          '[data-about-statement]',
-          { autoAlpha: 0, x: -14 },
-          { autoAlpha: 1, x: 0, duration: 0.75 },
-          0.46
-        )
-        .fromTo(
-          '[data-about-principle]',
-          { autoAlpha: 0, y: 24 },
-          { autoAlpha: 1, y: 0, duration: 0.75, stagger: 0.14 },
-          0.56
-        )
-        .fromTo(
-          '[data-about-chrome]',
-          { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 0.85 },
-          0.75
-        );
+        { selector: '[data-about-intro]', at: 0.18, y: 14 },
+        { selector: '[data-about-statement]', at: 0.26, y: 12 },
+        {
+          selector: '[data-about-principle]',
+          at: 0.32,
+          y: 16,
+          stagger: 0.08,
+        },
+        { selector: '[data-about-chrome]', at: 0.44, y: 0 },
+      ]);
     }, sectionRef);
 
     return () => ctx.revert();
@@ -80,6 +49,12 @@ export function AboutSection() {
       aria-labelledby="about-heading"
       className="relative min-h-screen w-full overflow-hidden bg-obsidian py-24 md:py-28 lg:py-24 flex flex-col justify-between"
     >
+      {/* Top & bottom subtle continuity gradient hairlines connecting Hero -> About -> Capabilities */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/25 to-transparent"
+      />
+
       {/* =====================================================================
           1. FADED BACKGROUND IMAGE LAYER (MERGED SEAMLESSLY INTO OBSIDIAN)
          ===================================================================== */}
@@ -135,7 +110,6 @@ export function AboutSection() {
       <Container className="relative z-20 my-auto py-10 lg:py-8">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="relative z-20 flex flex-col items-start lg:col-span-7 xl:col-span-6">
-            {/* Large Editorial Serif Headline: "Beyond" / "the code." */}
             <h2
               id="about-heading"
               aria-label={ABOUT_CONTENT.fullHeadline}
@@ -155,7 +129,6 @@ export function AboutSection() {
               </span>
             </h2>
 
-            {/* Personal Introduction Paragraph */}
             <p
               data-about-intro
               className="max-w-[540px] font-sans text-[length:var(--text-editorial-intro)] font-light leading-[1.6] tracking-[-0.005em] text-warmWhite/90 mb-7 md:mb-8 drop-shadow-[0_2px_14px_rgba(8,9,11,0.8)]"
@@ -163,7 +136,6 @@ export function AboutSection() {
               {ABOUT_CONTENT.introduction}
             </p>
 
-            {/* Supporting Statement with Vertical Gold Accent Bar */}
             <div
               data-about-statement
               className="mb-10 md:mb-12 flex items-center gap-4"
@@ -177,7 +149,6 @@ export function AboutSection() {
               </p>
             </div>
 
-            {/* Three Principles Grid: Curiosity | Craft | Ownership */}
             <div
               role="list"
               aria-label="Guiding engineering principles"

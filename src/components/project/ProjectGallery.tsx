@@ -10,6 +10,7 @@ import { ProjectFilters } from '@/components/project/ProjectFilters';
 import { ProjectCard } from '@/components/project/ProjectCard';
 import { ProjectPagination } from '@/components/project/ProjectPagination';
 import { ProjectPreview } from '@/components/project/ProjectPreview';
+import { MOTION_TOKENS } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { ProjectFilterCategory, ProjectItem } from '@/types/project';
 
@@ -57,7 +58,7 @@ export function ProjectGallery() {
     return filteredProjects.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredProjects, currentPage]);
 
-  // Smooth GSAP transition whenever filter or page changes
+  // Smooth GSAP transition whenever filter or page changes (450ms, power2.out)
   useEffect(() => {
     const grid = gridRef.current;
     if (!grid || prefersReducedMotion) return;
@@ -65,14 +66,13 @@ export function ProjectGallery() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         '[data-project-card]',
-        { autoAlpha: 0, y: 20, scale: 0.985 },
+        { autoAlpha: 0, y: 12 },
         {
           autoAlpha: 1,
           y: 0,
-          scale: 1,
-          duration: 0.55,
-          stagger: 0.1,
-          ease: 'power3.out',
+          duration: 0.45,
+          stagger: MOTION_TOKENS.stagger.tight,
+          ease: MOTION_TOKENS.ease.primary,
           clearProps: 'transform,opacity,visibility',
         }
       );

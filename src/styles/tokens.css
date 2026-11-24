@@ -34,7 +34,10 @@
   --gutter-tablet: 32px;
   --gutter-mobile: 20px;
 
-  /* Motion */
-  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Centralized Motion System */
+  --duration-micro: 200ms;
+  --duration-entrance: 550ms;
+  --duration-section: 750ms;
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 }

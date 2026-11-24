@@ -3,9 +3,12 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Container } from '@/components/ui/Container';
 import { ProjectGallery } from '@/components/project/ProjectGallery';
+import {
+  createRestrainedSectionParallax,
+  createSectionEntranceTimeline,
+} from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export const WORK_SECTION_CONTENT = {
@@ -28,69 +31,22 @@ export function WorkSection() {
     const section = sectionRef.current;
     if (!section || prefersReducedMotion) return;
 
-    gsap.registerPlugin(ScrollTrigger);
-
     const ctx = gsap.context(() => {
-      // Restrained background fade & subtle parallax as Section 04 enters from Capabilities
-      if (bgImageRef.current) {
-        gsap.fromTo(
-          bgImageRef.current,
-          { y: -36, scale: 1.02, autoAlpha: 0.45 },
-          {
-            y: 20,
-            scale: 1.06,
-            autoAlpha: 0.9,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 95%',
-              end: 'bottom 10%',
-              scrub: 0.9,
-            },
-          }
-        );
-      }
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 74%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none reverse',
-        },
-        defaults: { ease: 'power3.out' },
+      // Restrained Capabilities -> Proof continuity transition (subtle 16px shift, no scaling zoom)
+      createRestrainedSectionParallax(section, bgImageRef.current, {
+        fromY: -16,
+        toY: 16,
+        fromOpacity: 0.65,
+        toOpacity: 0.88,
       });
 
-      tl.fromTo(
-        '[data-proof-eyebrow]',
-        { autoAlpha: 0, x: -16 },
-        { autoAlpha: 1, x: 0, duration: 0.7 },
-        0
-      )
-        .fromTo(
-          '[data-proof-headline]',
-          { autoAlpha: 0, y: 28 },
-          { autoAlpha: 1, y: 0, duration: 0.85 },
-          0.1
-        )
-        .fromTo(
-          '[data-proof-subtitle]',
-          { autoAlpha: 0, y: 18 },
-          { autoAlpha: 1, y: 0, duration: 0.75 },
-          0.24
-        )
-        .fromTo(
-          '[data-proof-filters]',
-          { autoAlpha: 0, y: 16 },
-          { autoAlpha: 1, y: 0, duration: 0.7 },
-          0.35
-        )
-        .fromTo(
-          '[data-proof-pagination]',
-          { autoAlpha: 0, y: 16 },
-          { autoAlpha: 1, y: 0, duration: 0.7 },
-          0.65
-        );
+      createSectionEntranceTimeline(section, [
+        { selector: '[data-proof-eyebrow]', at: 0, y: 10 },
+        { selector: '[data-proof-headline]', at: 0.06, y: 16 },
+        { selector: '[data-proof-subtitle]', at: 0.14, y: 12 },
+        { selector: '[data-proof-filters]', at: 0.22, y: 12 },
+        { selector: '[data-proof-pagination]', at: 0.36, y: 12 },
+      ]);
     }, sectionRef);
 
     return () => ctx.revert();

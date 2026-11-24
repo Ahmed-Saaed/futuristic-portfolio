@@ -27,7 +27,8 @@ export function CapabilitiesCenterpiece({
   const innerRingRef = useRef<SVGGElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  // 1. ScrollTrigger Section Transition (About Orbital Sculpture -> 3 Isometric Technical Layers)
+  // 1. Simple, Restrained Entrance Transition (About -> Capabilities)
+  // No flying slabs or infinite rotating loops — the centerpiece emerges calmly as a cohesive architectural composition.
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage || prefersReducedMotion) return;
@@ -35,78 +36,27 @@ export function CapabilitiesCenterpiece({
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Morphing entrance from Section 02's orbital ring into 3 separated isometric slabs
-      const entranceTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: stage,
-          start: 'top 86%',
-          end: 'center 52%',
-          scrub: 0.85,
-        },
-      });
-
-      entranceTl
-        .fromTo(
-          [outerRingRef.current, innerRingRef.current],
-          { scale: 0.78, rotation: -24, autoAlpha: 0.25, transformOrigin: '50% 50%' },
-          { scale: 1, rotation: 0, autoAlpha: 1, ease: 'power2.out' },
-          0
-        )
-        .fromTo(
-          topSlabRef.current,
-          { y: 65, scale: 0.88, autoAlpha: 0.2, transformOrigin: '50% 50%' },
-          { y: 0, scale: 1, autoAlpha: 1, ease: 'power2.out' },
-          0.05
-        )
-        .fromTo(
-          midSlabRef.current,
-          { y: 0, scale: 0.86, autoAlpha: 0.2, transformOrigin: '50% 50%' },
-          { y: 0, scale: 1, autoAlpha: 1, ease: 'power2.out' },
-          0.08
-        )
-        .fromTo(
-          botSlabRef.current,
-          { y: -65, scale: 0.88, autoAlpha: 0.2, transformOrigin: '50% 50%' },
-          { y: 0, scale: 1, autoAlpha: 1, ease: 'power2.out' },
-          0.05
-        );
-
-      // Ambient orbital ring drift
-      gsap.to(outerRingRef.current, {
-        rotation: 5,
-        transformOrigin: '50% 50%',
-        duration: 9,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-      });
-
-      gsap.to(innerRingRef.current, {
-        rotation: -6,
-        transformOrigin: '50% 50%',
-        duration: 7.5,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-      });
-
-      // Floating dark obsidian crystals around the stack
-      gsap.to('[data-cap-shard]', {
-        y: 'random(-10, 10)',
-        x: 'random(-6, 6)',
-        rotation: 'random(-8, 8)',
-        duration: 'random(4, 6.2)',
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        stagger: 0.3,
-      });
+      gsap.fromTo(
+        stage,
+        { autoAlpha: 0, y: 18 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.65,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: stage,
+            start: 'top 82%',
+            once: true,
+          },
+        }
+      );
     }, stageRef);
 
     return () => ctx.revert();
   }, [prefersReducedMotion]);
 
-  // 2. React to Active Capability Card Selection (elevate & emphasize selected layer)
+  // 2. React to Active Capability Card Selection (immediate, predictable feedback: 250ms)
   useEffect(() => {
     if (prefersReducedMotion) return;
 
@@ -116,39 +66,33 @@ export function CapabilitiesCenterpiece({
 
     if (topSlabRef.current) {
       gsap.to(topSlabRef.current, {
-        y: isFrontend ? -10 : 0,
-        scale: isFrontend ? 1.04 : 0.98,
+        y: isFrontend ? -6 : 0,
         opacity: isFrontend ? 1 : 0.85,
-        transformOrigin: '360px 180px',
-        duration: 0.45,
-        ease: 'power3.out',
+        duration: 0.25,
+        ease: 'power2.out',
       });
     }
 
     if (midSlabRef.current) {
       gsap.to(midSlabRef.current, {
-        y: isMobile ? -6 : 0,
-        scale: isMobile ? 1.045 : 0.98,
+        y: isMobile ? -5 : 0,
         opacity: isMobile ? 1 : 0.85,
-        transformOrigin: '360px 280px',
-        duration: 0.45,
-        ease: 'power3.out',
+        duration: 0.25,
+        ease: 'power2.out',
       });
     }
 
     if (botSlabRef.current) {
       gsap.to(botSlabRef.current, {
-        y: isBackend ? -8 : 0,
-        scale: isBackend ? 1.045 : 0.98,
+        y: isBackend ? -5 : 0,
         opacity: isBackend ? 1 : 0.85,
-        transformOrigin: '360px 380px',
-        duration: 0.45,
-        ease: 'power3.out',
+        duration: 0.25,
+        ease: 'power2.out',
       });
     }
   }, [activeArea, prefersReducedMotion]);
 
-  // 3. Subtle Pointer Parallax Response on the 3D Stack
+  // 3. Restrained Pointer Parallax Response on the 3D Stack (max ±8px, no rotation)
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (prefersReducedMotion || !stageRef.current || !tiltGroupRef.current) return;
     const rect = stageRef.current.getBoundingClientRect();
@@ -156,11 +100,9 @@ export function CapabilitiesCenterpiece({
     const normY = (event.clientY - rect.top) / rect.height - 0.5;
 
     gsap.to(tiltGroupRef.current, {
-      x: normX * 18,
-      y: normY * 14,
-      rotation: normX * 2.5,
-      transformOrigin: '360px 280px',
-      duration: 0.6,
+      x: normX * 8,
+      y: normY * 6,
+      duration: 0.35,
       ease: 'power2.out',
     });
   };
@@ -170,9 +112,8 @@ export function CapabilitiesCenterpiece({
     gsap.to(tiltGroupRef.current, {
       x: 0,
       y: 0,
-      rotation: 0,
-      duration: 0.8,
-      ease: 'power3.out',
+      duration: 0.45,
+      ease: 'power2.out',
     });
   };
 

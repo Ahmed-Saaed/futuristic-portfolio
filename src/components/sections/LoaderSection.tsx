@@ -4,12 +4,19 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { Monogram } from '@/components/ui/Monogram';
 import { BRAND_CONFIG, HERO_CONTENT } from '@/data/navigation';
+import { MOTION_TOKENS } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export interface LoaderSectionProps {
   onComplete?: () => void;
 }
 
+/**
+ * AS Monogram Loader Experience.
+ * Tracks real document readiness, font readiness, and the Hero poster/portrait image.
+ * Never waits for background video downloads, includes zero artificial delay,
+ * and exits immediately once essential assets are ready.
+ */
 export function LoaderSection({ onComplete }: LoaderSectionProps) {
   const [progress, setProgress] = useState<number>(0);
   const [isDone, setIsDone] = useState<boolean>(false);
@@ -25,68 +32,62 @@ export function LoaderSection({ onComplete }: LoaderSectionProps) {
     }
 
     let isMounted = true;
-    let currentProgress = 12;
+    let isExiting = false;
+    let currentProgress = 20;
     setProgress(currentProgress);
 
-    // Milestone 1: Document Ready & Fonts Ready
     const updateProgress = (target: number) => {
       if (!isMounted) return;
       currentProgress = Math.max(currentProgress, target);
       setProgress(currentProgress);
     };
 
+    const finalizeLoading = () => {
+      if (!isMounted || isExiting) return;
+      isExiting = true;
+      updateProgress(100);
+
+      const overlay = overlayRef.current;
+      if (!overlay) {
+        setIsDone(true);
+        onComplete?.();
+        return;
+      }
+
+      gsap.to(overlay, {
+        autoAlpha: 0,
+        duration: 0.45,
+        ease: MOTION_TOKENS.ease.smoothInOut,
+        onComplete: () => {
+          if (!isMounted) return;
+          setIsDone(true);
+          onComplete?.();
+        },
+      });
+    };
+
     if (document.readyState === 'complete') {
-      updateProgress(45);
+      updateProgress(55);
     } else {
-      window.addEventListener('load', () => updateProgress(45), { once: true });
+      window.addEventListener('load', () => updateProgress(55), { once: true });
     }
 
     if ('fonts' in document) {
       document.fonts.ready
-        .then(() => updateProgress(70))
-        .catch(() => updateProgress(70));
+        .then(() => updateProgress(80))
+        .catch(() => updateProgress(80));
     } else {
-      updateProgress(70);
+      updateProgress(80);
     }
 
-    // Milestone 2: Preload Hero Portrait Asset
+    // Track only the Hero portrait/poster image — NEVER wait for the background video
     const img = new window.Image();
     img.src = HERO_CONTENT.portrait.src;
-
-    const finalizeLoading = () => {
-      if (!isMounted) return;
-      updateProgress(100);
-
-      const exitTimer = window.setTimeout(() => {
-        if (!isMounted) return;
-        const overlay = overlayRef.current;
-        if (!overlay) {
-          setIsDone(true);
-          onComplete?.();
-          return;
-        }
-
-        gsap.to(overlay, {
-          autoAlpha: 0,
-          scale: 1.03,
-          duration: 0.65,
-          ease: 'power3.inOut',
-          onComplete: () => {
-            if (!isMounted) return;
-            setIsDone(true);
-            onComplete?.();
-          },
-        });
-      }, 240);
-
-      return () => window.clearTimeout(exitTimer);
-    };
-
     img.onload = finalizeLoading;
     img.onerror = finalizeLoading;
 
-    // Sensible maximum loading duration fallback (1100ms) so it never blocks
-    const maxTimeout = window.setTimeout(finalizeLoading, 1100);
+    // Fast 750ms maximum ceiling so the user is never blocked
+    const maxTimeout = window.setTimeout(finalizeLoading, 750);
 
     return () => {
       isMounted = false;
@@ -106,7 +107,6 @@ export function LoaderSection({ onComplete }: LoaderSectionProps) {
       aria-label="Loading Ahmed Sa'ed Portfolio"
       className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-obsidian px-6"
     >
-      {/* Subtle ambient gold/cyan radial aura */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute h-72 w-72 rounded-full bg-gold/10 blur-[90px]"
@@ -117,7 +117,7 @@ export function LoaderSection({ onComplete }: LoaderSectionProps) {
           size="xl"
           fillProgress={progress}
           glow={progress >= 95}
-          className="transition-all duration-300"
+          className="transition-all duration-200"
         />
 
         <div className="flex flex-col items-center gap-2">
@@ -126,7 +126,7 @@ export function LoaderSection({ onComplete }: LoaderSectionProps) {
           </span>
           <div className="h-[1.5px] w-32 overflow-hidden rounded-full bg-borderDark/70">
             <div
-              className="h-full bg-gradient-to-r from-gold via-gold-highlight to-cyan transition-all duration-200 ease-out"
+              className="h-full bg-gradient-to-r from-gold via-gold-highlight to-cyan transition-all duration-150 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -135,4 +135,3 @@ export function LoaderSection({ onComplete }: LoaderSectionProps) {
     </div>
   );
 }
-

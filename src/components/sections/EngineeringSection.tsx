@@ -3,10 +3,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ENGINEERING_PROCESS_CONTENT } from '@/data/engineering';
 import { Container } from '@/components/ui/Container';
 import { ProcessTimeline } from '@/components/engineering/ProcessTimeline';
+import {
+  createRestrainedSectionParallax,
+  createSectionEntranceTimeline,
+} from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import type { ProcessStageId } from '@/types/common';
 
@@ -51,157 +54,79 @@ export function EngineeringSection() {
     [activeStageId]
   );
 
-  // 1. Entrance & Scroll Parallax Animations
+  // 1. Restrained Entrance & Section Continuity (Zero continuous rotating loops)
   useEffect(() => {
     const section = sectionRef.current;
     if (!section || prefersReducedMotion) return;
 
-    gsap.registerPlugin(ScrollTrigger);
-
     const ctx = gsap.context(() => {
-      // Restrained scroll parallax on the monumental Greek marble statue
-      if (statueStageRef.current) {
-        gsap.fromTo(
-          statueStageRef.current,
-          { y: -32, scale: 1.01 },
-          {
-            y: 24,
-            scale: 1.05,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top 95%',
-              end: 'bottom 5%',
-              scrub: 0.9,
-            },
-          }
-        );
-      }
-
-      // Slow ambient orbital ring movement around the Greek statue
-      if (orbitalRingsRef.current) {
-        gsap.to('[data-statue-orbit-outer]', {
-          rotation: 5,
-          transformOrigin: '50% 50%',
-          duration: 11,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-        });
-
-        gsap.to('[data-statue-orbit-inner]', {
-          rotation: -6,
-          transformOrigin: '50% 50%',
-          duration: 9,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-        });
-      }
-
-      // Staggered editorial reveal for Section 05 header and the 5 process cards
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: 'top 74%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none reverse',
-        },
-        defaults: { ease: 'power3.out' },
+      // Restrained scroll continuity on the monumental Greek marble statue (±16px, no zoom)
+      createRestrainedSectionParallax(section, statueStageRef.current, {
+        fromY: -16,
+        toY: 16,
+        fromOpacity: 0.75,
+        toOpacity: 1,
       });
 
-      tl.fromTo(
-        '[data-process-eyebrow]',
-        { autoAlpha: 0, x: -16 },
-        { autoAlpha: 1, x: 0, duration: 0.7 },
-        0
-      )
-        .fromTo(
-          '[data-process-headline-line]',
-          { autoAlpha: 0, y: 28 },
-          { autoAlpha: 1, y: 0, duration: 0.85, stagger: 0.14 },
-          0.1
-        )
-        .fromTo(
-          '[data-process-intro]',
-          { autoAlpha: 0, y: 18 },
-          { autoAlpha: 1, y: 0, duration: 0.75 },
-          0.32
-        )
-        .fromTo(
-          '[data-process-caption]',
-          { autoAlpha: 0, x: -14 },
-          { autoAlpha: 1, x: 0, duration: 0.7 },
-          0.44
-        )
-        .fromTo(
-          '[data-process-card]',
-          { autoAlpha: 0, y: 28 },
-          { autoAlpha: 1, y: 0, duration: 0.75, stagger: 0.1 },
-          0.52
-        );
+      // Single-pass editorial reveal for Section 05 header and the 5 process cards
+      createSectionEntranceTimeline(section, [
+        { selector: '[data-process-eyebrow]', at: 0, y: 10 },
+        {
+          selector: '[data-process-headline-line]',
+          at: 0.06,
+          y: 16,
+          stagger: 0.08,
+        },
+        { selector: '[data-process-intro]', at: 0.18, y: 12 },
+        { selector: '[data-process-caption]', at: 0.25, y: 10 },
+        {
+          selector: '[data-process-card]',
+          at: 0.3,
+          y: 16,
+          stagger: 0.07,
+        },
+      ]);
     }, sectionRef);
 
     return () => ctx.revert();
   }, [prefersReducedMotion]);
 
-  // 2. Gentle Lighting & Orbital Variation When Switching Stages
+  // 2. Gentle Lighting Variation When Switching Stages (No continuous rotation)
   useEffect(() => {
     if (prefersReducedMotion || !activeStage) return;
 
-    const { goldIntensity, cyanIntensity, orbitAngle } =
-      activeStage.statueLightingFocus;
+    const { goldIntensity, cyanIntensity } = activeStage.statueLightingFocus;
 
     if (goldAuraRef.current) {
       gsap.to(goldAuraRef.current, {
-        opacity: goldIntensity * 0.42,
-        scale: 0.92 + goldIntensity * 0.16,
-        duration: 0.75,
+        opacity: goldIntensity * 0.38,
+        duration: 0.45,
         ease: 'power2.out',
       });
     }
 
     if (cyanAuraRef.current) {
       gsap.to(cyanAuraRef.current, {
-        opacity: cyanIntensity * 0.45,
-        scale: 0.92 + cyanIntensity * 0.16,
-        duration: 0.75,
+        opacity: cyanIntensity * 0.4,
+        duration: 0.45,
         ease: 'power2.out',
-      });
-    }
-
-    if (orbitalRingsRef.current) {
-      gsap.to(orbitalRingsRef.current, {
-        rotation: orbitAngle * 0.15,
-        duration: 0.9,
-        ease: 'power3.out',
       });
     }
   }, [activeStage, prefersReducedMotion]);
 
-  // 3. Restrained Pointer Parallax on Statue & Orbital Rings (Desktop only)
+  // 3. Restrained Pointer Parallax on Statue (Max ±6px, desktop only)
   const handlePointerMove = (event: React.PointerEvent<HTMLElement>) => {
     if (prefersReducedMotion || !sectionRef.current || !statueStageRef.current)
       return;
 
     const rect = sectionRef.current.getBoundingClientRect();
     const normX = (event.clientX - rect.left) / rect.width - 0.5;
-    const normY = (event.clientY - rect.top) / rect.height - 0.5;
 
     gsap.to(statueStageRef.current, {
-      x: normX * 14,
-      duration: 0.7,
+      x: normX * 6,
+      duration: 0.45,
       ease: 'power2.out',
     });
-
-    if (orbitalRingsRef.current) {
-      gsap.to(orbitalRingsRef.current, {
-        x: normX * -18,
-        y: normY * -12,
-        duration: 0.7,
-        ease: 'power2.out',
-      });
-    }
   };
 
   const handlePointerLeave = () => {
@@ -209,18 +134,9 @@ export function EngineeringSection() {
 
     gsap.to(statueStageRef.current, {
       x: 0,
-      duration: 0.9,
-      ease: 'power3.out',
+      duration: 0.55,
+      ease: 'power2.out',
     });
-
-    if (orbitalRingsRef.current) {
-      gsap.to(orbitalRingsRef.current, {
-        x: 0,
-        y: 0,
-        duration: 0.9,
-        ease: 'power3.out',
-      });
-    }
   };
 
   return (
@@ -454,6 +370,11 @@ export function EngineeringSection() {
           onSelectStage={handleToggleStage}
         />
       </Container>
+      {/* Bottom closing scene vignette preparing the transition from Section 05 (How I Work) into Contact */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-32 bg-gradient-to-t from-obsidian via-obsidian/80 to-transparent"
+      />
     </section>
   );
 }

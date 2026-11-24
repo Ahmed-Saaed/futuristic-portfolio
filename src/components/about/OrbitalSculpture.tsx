@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { createRestrainedSectionParallax } from '@/lib/motion';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { cn } from '@/lib/utils';
 
@@ -20,32 +20,14 @@ export function OrbitalSculpture({ className }: OrbitalSculptureProps) {
     const container = containerRef.current;
     if (!container || prefersReducedMotion) return;
 
-    gsap.registerPlugin(ScrollTrigger);
-
     const ctx = gsap.context(() => {
-      // Restrained parallax and smooth fade-in as Section 02 enters from the Hero
-      if (imageWrapRef.current) {
-        gsap.fromTo(
-          imageWrapRef.current,
-          {
-            y: -48,
-            scale: 1.02,
-            autoAlpha: 0.35,
-          },
-          {
-            y: 24,
-            scale: 1.08,
-            autoAlpha: 0.85,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: container,
-              start: 'top 95%',
-              end: 'bottom 10%',
-              scrub: 0.9,
-            },
-          }
-        );
-      }
+      // Restrained Hero -> About -> Capabilities continuity (16px shift, subtle opacity progression, zero continuous loops)
+      createRestrainedSectionParallax(container, imageWrapRef.current, {
+        fromY: -18,
+        toY: 18,
+        fromOpacity: 0.55,
+        toOpacity: 0.85,
+      });
     }, containerRef);
 
     return () => ctx.revert();
