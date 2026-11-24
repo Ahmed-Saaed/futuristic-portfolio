@@ -1,0 +1,38 @@
+/* ==========================================================================
+   AHMED SA'ED — CENTRALIZED DESIGN TOKENS
+   ========================================================================== */
+
+:root {
+  /* Color Palette */
+  --color-obsidian: #08090B;
+  --color-graphite: #14171A;
+  --color-elevated: #1C2024;
+  --color-champagne-gold: #C4A45A;
+  --color-gold-highlight: #E5BE78;
+  --color-electric-cyan: #00D5E8;
+  --color-warm-white: #F2F0E9;
+  --color-muted-grey: #92949B;
+  --color-border: #30343A;
+
+  /* Font Families */
+  --font-space-grotesk: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-cormorant: 'Cormorant Garamond', Georgia, serif;
+
+  /* Fluid Typography Scale (CSS clamp) */
+  --text-hero-headline: clamp(2.35rem, 4.4vw + 0.6rem, 4.55rem);
+  --text-section-headline: clamp(2rem, 3.2vw + 0.5rem, 3.5rem);
+  --text-eyebrow: clamp(0.72rem, 0.35vw + 0.62rem, 0.875rem);
+  --text-subtitle: clamp(0.92rem, 0.5vw + 0.78rem, 1.125rem);
+  --text-body: clamp(0.95rem, 0.3vw + 0.85rem, 1.0625rem);
+
+  /* Layout & Grid */
+  --container-max-width: 1440px;
+  --gutter-desktop: 64px;
+  --gutter-tablet: 32px;
+  --gutter-mobile: 20px;
+
+  /* Motion */
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
