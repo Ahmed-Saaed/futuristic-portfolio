@@ -1,10 +1,12 @@
 import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 import { LoaderSection } from '@/components/sections/LoaderSection';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { AboutSection } from '@/components/sections/AboutSection';
 import { CapabilitiesSection } from '@/components/sections/CapabilitiesSection';
 import { WorkSection } from '@/components/sections/WorkSection';
 import { EngineeringSection } from '@/components/sections/EngineeringSection';
+import { ContactSection } from '@/components/sections/ContactSection';
 
 export default function HomePage() {
   return (
@@ -17,7 +19,9 @@ export default function HomePage() {
         <CapabilitiesSection />
         <WorkSection />
         <EngineeringSection />
+        <ContactSection />
       </main>
+      <Footer />
     </>
   );
 }

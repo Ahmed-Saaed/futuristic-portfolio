@@ -23,20 +23,20 @@ export const SOCIAL_LINKS: SocialLinkItem[] = [
   {
     id: 'github',
     label: 'GitHub',
-    href: '#contact',
-    ariaLabel: "Ahmed Sa'ed on GitHub (configure profile link)",
+    href: 'https://github.com/Ahmed-Saaed',
+    ariaLabel: "Ahmed Sa'ed on GitHub",
   },
   {
     id: 'linkedin',
     label: 'LinkedIn',
-    href: '#contact',
-    ariaLabel: "Ahmed Sa'ed on LinkedIn (configure profile link)",
+    href: 'https://www.linkedin.com/in/ahmed-saaed',
+    ariaLabel: "Ahmed Sa'ed on LinkedIn",
   },
   {
     id: 'email',
     label: 'Email',
-    href: '#contact',
-    ariaLabel: "Email Ahmed Sa'ed",
+    href: 'mailto:ahmed.saaed.abdelgel@gmail.com',
+    ariaLabel: "Email Ahmed Sa'ed at ahmed.saaed.abdelgel@gmail.com",
   },
 ];
 
